@@ -1,0 +1,95 @@
+# This workflow was automatically converted from Azure Pipelines
+# Conversion date: 2026-09-04 12:38:03 UTC
+# Please review and test before using in production
+
+name: DAST scan
+on:
+  workflow_dispatch:
+    inputs:
+      ENVIRONMENT:
+        description: ENVIRONMENT
+        type: choice
+        options:
+        - us-dev
+        - us-qa
+        - us-perf
+        - us-int
+        - us-stage
+        - apac-stage
+        - emea-stage
+        default: us-int
+        required: false
+      cfg:
+        description: cfg
+        type: string
+        default: '{"endpoint": "$(NETSPARKER_ENDPOINT)", "scanWebSitesProfile": "$(NETSPARKER_PROFILE_ID)", "scanWebSites": "$(NETSPARKER_WEBSITE_ID)", "jobOptions": {"timeoutInMinutes": "480"}, "autoDownload": "true"}'
+        required: false
+      ctx:
+        description: ctx
+        type: string
+        default: '{"name": "netsparker", "displayName": "netspartkerjob"}'
+        required: false
+  push:
+    branches:
+    - main
+  schedule:
+  - cron: 0 22 * * *
+env:
+  ENVIRONMENT: us-int
+jobs:
+  __default_netsparker:
+    runs-on: ubuntu-latest
+    timeout-minutes: 480
+    name: ''
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    - name: '[!] TODO: Convert ADO task - 6d15af64-176c-496d-b583-fd2ae21d4df4@1'
+      run: >-
+        # [!] TODO: Implement equivalent for Azure DevOps task: 6d15af64-176c-496d-b583-fd2ae21d4df4@1
+
+        #
+
+        # This task is not in the automated conversion mapping.
+
+        # You need to find the GitHub Actions equivalent or write a custom script.
+
+        # Task inputs:
+
+        #   repository: none
+
+        #
+
+        # Resources:
+
+        #   - GitHub Actions Marketplace: https://github.com/marketplace?type=actions
+
+        #   - Azure DevOps task documentation: https://learn.microsoft.com/azure/devops/pipelines/tasks/
+
+        #
+
+        echo '[!] TODO: Convert ADO task: 6d15af64-176c-496d-b583-fd2ae21d4df4@1'
+
+        echo 'This step requires manual conversion'
+
+        exit 0  # Change to 'exit 1' if you want the workflow to fail here
+      if: false
+    - id: netsparker-scan-step
+      uses: netsparker/Netsparker-Cloud-GitHub-Actions@v1.0.1
+      with:
+        website-id: ${{ env.NETSPARKER_WEBSITE_ID }}
+        scan-type: FullWithSelectedProfile
+        profile-id: ${{ env.NETSPARKER_PROFILE_ID }}
+        user-id: ${{ vars.NETSPARKER_USER_ID }}
+        api-token: ${{ secrets.NETSPARKER_API_TOKEN }}
+        base-url: https://www.netsparkercloud.com
+        wait-for-completion: false
+        fail-on-level: DoNotFail
+    - name: Display Scan Request Message
+      run: echo "${{ steps.netsparker-scan-step.outputs.scan-message }}" >> $GITHUB_OUTPUT
+permissions:
+  contents: read
+  actions: read
+  id-token: write
+  checks: write
+  pull-requests: write
